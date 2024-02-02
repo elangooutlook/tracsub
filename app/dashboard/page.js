@@ -1303,7 +1303,7 @@ const  MyprojBar = () => {
 
 
 
-let summ = history.reduce((partialSum, history) => partialSum + history, 0) + currentMonthTotal
+let summ = prevMonthsTotals.reduce((partialSum, prevMonthsTotals) => partialSum + prevMonthsTotals, 0) + currentMonthTotal
 
 const nextMonthPrediction = summ/5
 
