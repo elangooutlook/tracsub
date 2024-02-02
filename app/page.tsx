@@ -4,6 +4,10 @@ import { supabase } from "@/lib/supabase"
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Session } from "@supabase/auth-helpers-nextjs";
+import Spline from '@splinetool/react-spline';
+
+
+
 
 export default function Home() {
   const [session, setSession] = useState<Session|null>(null);
@@ -55,9 +59,10 @@ return (
     </div>
     
 </div>
-<div className="w-1/2 !h-screen bg-[#09090B]">
+<div className="w-1/2 h-screen flex flex-col items-center bg-[#09090B]">
 
-
+<div className="w-full h-full mt-[20vh] ">
+<Spline scene="https://prod.spline.design/ZoTAcxYSJVlf9OZp/scene.splinecode" /></div>
 </div>
 
     </div>
