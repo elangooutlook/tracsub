@@ -1,16 +1,116 @@
 "use client"
 import Link from "next/link"
 import { ResizablePanel, ResizableHandle, ResizablePanelGroup } from "@/components/ui/resizable"
-import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card"
+import { CardTitle,  CardDescription, CardHeader, CardContent, Card, CardFooter } from "@/components/ui/card"
 import { ResponsiveLine } from "@nivo/line"
 import { ResponsivePie } from "@nivo/pie"
+import { ResponsiveRadialBar } from '@nivo/radial-bar'
 import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/ui/table"
 
 import { IoBagCheckSharp,IoSettings,IoPieChart } from "react-icons/io5";
 import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem, DropdownMenuContent, DropdownMenu } from "@/components/ui/dropdown-menu"
+import { DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem, DropdownMenuContent, DropdownMenu } from "@/components/ui/dropdown-menu"
+
+import { Label } from "@/components/ui/label"
+import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+
+
+
+var data = {
+  "email": "elango5292@gmail.com",
+  "subscriptions": [
+    {
+      "id": "1",
+      "name": "Netflix",
+      "cost": "10",
+      "currency": "INR",
+      "date": "2024-01-16",
+      "valid": true,
+      "period": "daily",
+      "nextPayment": "2024-01-17",
+      "paymentType": "Cash",
+      "category": "Entertainment",
+      "reminder": "3",
+      "type": "Recurring",
+      "notes": "This is a note for Netflix.",
+      "plan-name": "Basic",
+      "url": "https://www.netflix.com"
+    },
+    {
+      "id": "2",
+      "name": "Amazon Prime Video",
+      "cost": "150",
+      "currency": "INR",
+      "date": "2024-01-15",
+      "valid": false,
+      "period": "monthly",
+      "nextPayment": "No",
+      "paymentType": "Credit Card",
+      "category": "Entertainment",
+      "reminder": "3",
+      "type": "One time",
+      "notes": "This is a note for Amazon Prime Video.",
+      "plan-name": "Premium",
+      "url": "https://www.primevideo.com"
+    },
+    {
+      "id": "3",
+      "name": "Disney+",
+      "cost": "30",
+      "currency": "INR",
+      "date": "2024-01-14",
+      "valid": true,
+      "period": "weekly",
+      "nextPayment": "2024-01-21",
+      "paymentType": "Debit Card",
+      "category": "Entertainment",
+      "reminder": "3",
+      "type": "Recurring",
+      "notes": "This is a note for Disney+.",
+      "plan-name": "Basic",
+      "url": "https://www.disneyplus.com"
+    },
+    {
+      "id": "4",
+      "name": "Hulu",
+      "cost": "20",
+      "currency": "INR",
+      "date": "2024-01-13",
+      "valid": false,
+      "period": "annually",
+      "nextPayment": "NO",
+      "paymentType": "Bank Account",
+      "category": "Entertainment",
+      "reminder": "3",
+      "type": "One time",
+      "notes": "This is a note for Hulu.",
+      "plan-name": "Premium",
+      "url": "https://www.hulu.com"
+    },
+    {
+      "id": "5",
+      "name": "Apple Music",
+      "cost": "50",
+      "currency": "INR",
+      "date": "2024-01-12",
+      "valid": true,
+      "period": "daily",
+      "nextPayment": "2024-01-13",
+      "paymentType": "Credit Card",
+      "category": "Entertainment",
+      "reminder": "3",
+      "type": "Recurring",
+      "notes": "This is a note for Apple Music.",
+      "plan-name": "Basic",
+      "url": "https://www.apple.com/apple-music/"
+    }
+  ]
+}
+
+
 
 
 export default function Component() {
@@ -22,10 +122,10 @@ export default function Component() {
 
   )=>{setnav(1)},[])
   return (
-    <div key="1" className="h-screen flex overflow-hidden bg-gray-100 dark:bg-gray-900">
+    <div key="1" className="h-full flex overflow-hidden bg-gray-100 dark:bg-gray-900">
       <ResizablePanelGroup className="h-full" direction="horizontal">
         <ResizablePanel defaultSize={10} maxSize={12} minSize={6}>
-          <div className="flex flex-col w-full h-full bg-white dark:bg-gray-800">
+          <div className="flex z-20 flex-col w-full h-full bg-white dark:bg-gray-800">
             <header className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
               <h2 className="text-lg font-semibold">Navigation</h2>
             </header>
@@ -62,40 +162,7 @@ export default function Component() {
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={80}>
-        {nav === 1 ? <Subscriptions/> : nav === 2 ? <Analyze/> : <Settings/>}
-
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    </div>
-  )
-}
-
-function ActivityIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-    </svg>
-  )
-}
-
-
-
-
-function Subscriptions() {
-  return (
-    <div key="1" className="flex flex-col h-screen">
-      <header className="flex h-[60px] items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40">
+        <header className="flex h-[60px] items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40">
         <div className="w-full flex-1">
           
         </div>
@@ -130,6 +197,304 @@ function Subscriptions() {
           </DropdownMenuContent>
         </DropdownMenu>
       </header>
+
+        {nav === 1 ? <Subscriptions/> : nav === 2 ? <Analyze/> : <Subscriptionform/>}
+
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </div>
+  )
+}
+
+function ActivityIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+    </svg>
+  )
+}
+
+
+
+function CalendarDaysIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+      <line x1="16" x2="16" y1="2" y2="6" />
+      <line x1="8" x2="8" y1="2" y2="6" />
+      <line x1="3" x2="21" y1="10" y2="10" />
+      <path d="M8 14h.01" />
+      <path d="M12 14h.01" />
+      <path d="M16 14h.01" />
+      <path d="M8 18h.01" />
+      <path d="M12 18h.01" />
+      <path d="M16 18h.01" />
+    </svg>
+  )
+}
+
+
+function PlusIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M5 12h14" />
+      <path d="M12 5v14" />
+    </svg>
+  )
+}
+
+
+function Subscriptionform(){
+  const [subscriptionName, setSubscriptionName] = useState('');
+  const initialSubscriptions = ['Netflix', 'Spotify', 'Amazon Prime', 'Hulu'];
+  const [suggestedSubscriptions, setSuggestedSubscriptions] = useState([]);
+
+  const handleSubscriptionNameChange = (e) => {
+    const inputValue = e.target.value;
+    setSubscriptionName(inputValue);
+  
+    if (inputValue === '') {
+      setSuggestedSubscriptions([]);
+    } else {
+      const filteredSubscriptions = initialSubscriptions.filter((subscription) =>
+        subscription.toLowerCase().includes(inputValue.toLowerCase())
+      );
+      setSuggestedSubscriptions(filteredSubscriptions);
+    }
+  };
+  
+  const handleSubscriptionClick = (subscription) => {
+    setSubscriptionName(subscription);
+    setSuggestedSubscriptions([]);
+  };
+
+  return(
+ 
+
+     <Card className="w-full h-full max-w-2xl">
+       <CardHeader>
+         <CardTitle>Add Subscription</CardTitle>
+         <CardDescription>Fill your new subscription details</CardDescription>
+       </CardHeader>
+       <CardContent className="space-y-4">
+       <div className="space-y-2">
+    <Label htmlFor="subscription-name">Subscription Name</Label>
+    <Input id="subscription-name" placeholder="Enter subscription name" value={subscriptionName}
+      onChange={handleSubscriptionNameChange} />
+    {suggestedSubscriptions.length > 0 && (
+      <ul>
+        {suggestedSubscriptions.map((subscription, index) => (
+          <li key={index} onClick={() => handleSubscriptionClick(subscription)}>
+            {subscription}
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+         <div className="grid grid-cols-2 gap-4">
+           <div className="space-y-2">
+             <Label htmlFor="cost">Cost</Label>
+             <Input id="cost" placeholder="Enter cost" type="number" />
+           </div>
+           <div className="space-y-2">
+             <Label htmlFor="currency">Currency</Label>
+             <Select>
+               <SelectTrigger id="currency">
+                 <SelectValue placeholder="Select" />
+               </SelectTrigger>
+               <SelectContent>
+                 <SelectItem value="usd">USD</SelectItem>
+                 <SelectItem value="eur">EUR</SelectItem>
+                 <SelectItem value="gbp">GBP</SelectItem>
+                 <SelectItem value="jpy">JPY</SelectItem>
+               </SelectContent>
+             </Select>
+           </div>
+         </div>
+         <div className="space-y-2">
+           <Label htmlFor="subscription-date">Subscription Date</Label>
+           <Input id="subscription-date" type="date" />
+         </div>
+         <div className="grid grid-cols-2 gap-4">
+           <div className="space-y-2">
+             <Label htmlFor="period">Period</Label>
+             <Select>
+               <SelectTrigger id="period">
+                 <SelectValue placeholder="Select" />
+               </SelectTrigger>
+               <SelectContent>
+                 <SelectItem value="daily">Daily</SelectItem>
+                 <SelectItem value="weekly">Weekly</SelectItem>
+                 <SelectItem value="monthly">Monthly</SelectItem>
+                 <SelectItem value="annually">Annually</SelectItem>
+               </SelectContent>
+             </Select>
+           </div>
+           <div className="space-y-2">
+             <Label htmlFor="payment-type">Payment Type</Label>
+             <Select>
+               <SelectTrigger id="payment-type">
+                 <SelectValue placeholder="Select" />
+               </SelectTrigger>
+               <SelectContent>
+                 <SelectItem value="cash">Cash</SelectItem>
+                 <SelectItem value="credit-card">Credit Card</SelectItem>
+                 <SelectItem value="debit-card">Debit Card</SelectItem>
+                 <SelectItem value="bank-account">Bank Account</SelectItem>
+               </SelectContent>
+             </Select>
+           </div>
+         </div>
+         <div className="space-y-2">
+           <Label htmlFor="category">Category</Label>
+           <Select>
+             <SelectTrigger id="category">
+               <SelectValue placeholder="Select" />
+             </SelectTrigger>
+             <SelectContent>
+               <SelectItem value="streaming">Streaming</SelectItem>
+               <SelectItem value="music">Music</SelectItem>
+               <SelectItem value="productivity-tools">Productivity Tools</SelectItem>
+               <SelectItem value="educational-platforms">Educational Platforms</SelectItem>
+               <SelectItem value="news">News</SelectItem>
+               <SelectItem value="travel">Travel</SelectItem>
+               <SelectItem value="lifestyle">Lifestyle</SelectItem>
+               <SelectItem value="other">Other</SelectItem>
+             </SelectContent>
+           </Select>
+         </div>
+         <div className="space-y-2">
+           <Label htmlFor="reminder">Reminder</Label>
+           <Input id="reminder" placeholder="Enter number of days for reminder" type="number" />
+         </div>
+         <div className="grid grid-cols-2 gap-4">
+           <div className="space-y-2">
+             <Label htmlFor="type">Type</Label>
+             <Select>
+               <SelectTrigger id="type">
+                 <SelectValue placeholder="Select" />
+               </SelectTrigger>
+               <SelectContent>
+                 <SelectItem value="recurring">Recurring</SelectItem>
+                 <SelectItem value="one-time">One Time</SelectItem>
+                 <SelectItem value="trial">Trial</SelectItem>
+               </SelectContent>
+             </Select>
+           </div>
+           <div className="space-y-2">
+             <Label htmlFor="plan-name">Plan Name</Label>
+             <Select>
+               <SelectTrigger id="plan-name">
+                 <SelectValue placeholder="Select" />
+               </SelectTrigger>
+               <SelectContent>
+                 <SelectItem value="basic">Basic</SelectItem>
+                 <SelectItem value="standard">Standard</SelectItem>
+                 <SelectItem value="premium">Premium</SelectItem>
+                 <SelectItem value="enterprise">Enterprise</SelectItem>
+               </SelectContent>
+             </Select>
+           </div>
+         </div>
+         <div className="space-y-2">
+           <Label htmlFor="notes">Notes</Label>
+           <Textarea id="notes" placeholder="Enter any additional notes here" />
+         </div>
+       </CardContent>
+       <CardFooter>
+         <Button className="ml-auto">Submit</Button>
+       </CardFooter>
+     </Card>
+   )
+}
+
+function Subscriptions() {
+  const periods = ['Daily', 'Weekly', 'Monthly', 'Annually'];
+  const paymentTypes = ['Cash', 'Credit Card', 'Debit Card', 'Bank Account'];
+  const activeStatuses = ['Active', 'Inactive'];
+  const categories = ['Streaming', 'Music', 'Productivity',"Tools", 'Educational', 'News', 'Travel', 'Lifestyle', 'Other'];
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const filteredSubscriptions = data.subscriptions.filter(subscription => {
+    // Check for case-insensitive match in name or plan-name
+    return subscription.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           subscription['plan-name'].toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
+
+  const defaultFilters = {
+    active: "Activity",
+    category: "Category",
+    paymentType: "Payment Type",
+    period: "Period"
+  };
+
+  const [filters, setFilters] = useState(defaultFilters);
+
+  const handleSelect = (filterName, value) => {
+    setFilters(prevFilters => {
+      const prevSelections = prevFilters[filterName];
+      if (prevSelections.includes(value)) {
+        // If the item is already selected, remove it from the selections
+        return {
+          ...prevFilters,
+          [filterName]: [ value]
+        };
+      } else {
+        // If the item is not selected, add it to the selections
+        return {
+          ...prevFilters,
+          [filterName]: [ value]
+        };
+      }
+    });
+  };
+
+  const handleReset = (filterName) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      [filterName]: []
+    }));
+  };
+
+  return (
+    <div key="1" className="flex  z-10 flex-col h-auto">
+   
+
+     
       <header className="flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-800 shadow">
         <h1 className="text-xl font-semibold text-gray-700 dark:text-gray-200">Manage Subscriptions</h1>
         <div className="flex items-center space-x-2">
@@ -137,67 +502,141 @@ function Subscriptions() {
           <Button variant="primary">+ Add Subscription</Button>
         </div>
       </header>
+
+
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
         
         <div className="flex flex-col md:grid md:grid-cols-6 gap-6">
-          <div className="md:col-span-4 lg:col-span-3 xl:col-span-4 flex flex-col gap-6">
+         
+          <div className=" flex flex-row gap-6">
             <Card>
               <CardHeader>
                 <CardTitle>Subscriptions</CardTitle>
               </CardHeader>
+              <div key="1" className="container my-3 px-4 md:px-6 grid gap-10 items-start">
+      <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+        <div className="text-sm font-semibold pl-4 sm:pl-0">Filters:</div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">
+            {filters.active.length ? filters.active: "Activity" }
+              <PlusIcon className="w-4 h-4 ml-2" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuCheckboxItem onSelect={() => handleSelect('active', "Activity")}>None</DropdownMenuCheckboxItem>
+            {activeStatuses.map((status) => (
+    <DropdownMenuCheckboxItem key={status} onSelect={() => handleSelect('active', status)}>
+      {status}
+    </DropdownMenuCheckboxItem>
+  ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">
+              {filters.category.length ? filters.category: "Category" }
+              <PlusIcon className="w-4 h-4 ml-2" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuCheckboxItem onSelect={() => handleSelect('category', "Category")}>None</DropdownMenuCheckboxItem>
+            {categories.map((category) => (
+    <DropdownMenuCheckboxItem key={category} onSelect={() => handleSelect('category', category)}>
+      {category}
+    </DropdownMenuCheckboxItem>
+  ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">
+            {filters.paymentType.length ? filters.paymentType: " Payment Type" }
+              <PlusIcon className="w-4 h-4 ml-2" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuCheckboxItem onSelect={() => handleSelect('paymentType', "Payment Type")}>None</DropdownMenuCheckboxItem>
+            {paymentTypes.map((paymentType) => (
+    <DropdownMenuCheckboxItem key={paymentType} onSelect={() => handleSelect('paymentType', paymentType)}>
+      {paymentType}
+    </DropdownMenuCheckboxItem>
+  ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">
+            {filters.period ? filters.period: "Period" }
+              <CalendarDaysIcon className="w-4 h-4 ml-2" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuCheckboxItem onSelect={() => handleSelect('period', "Period")}>None</DropdownMenuCheckboxItem>
+            {periods.map((period) => (
+    <DropdownMenuCheckboxItem key={period} onSelect={() => handleSelect('period', period)}>
+      {period}
+    </DropdownMenuCheckboxItem>
+  ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </div>
               <CardContent>
-                <div className="relative">
-                  <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
-                  <Input className="pl-8" placeholder="Search subscriptions..." type="search" />
-                </div>
-                <Table className="mt-4 w-full">
-                  <TableHeader>
-                    <TableRow>
+        <div className="relative">
+          <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
+          <Input
+            className="pl-8"
+            placeholder="Search subscriptions..."
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <Table className="mt-4 w-full">
+          <TableHeader>
+          <TableRow>
                       <TableHead className="w-[80px] cursor-pointer">SNO</TableHead>
                       <TableHead className="max-w-[150px] cursor-pointer">Name</TableHead>
                       <TableHead className="cursor-pointer">Amount</TableHead>
                       <TableHead className="cursor-pointer">Expiry Date</TableHead>
                       <TableHead className="cursor-pointer">Period</TableHead>
-                      <TableHead className="cursor-pointer">Plan Type</TableHead>
+                      <TableHead className="cursor-pointer">Payment Type</TableHead>
                       <TableHead />
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="font-medium">1</TableCell>
-                      <TableCell className="font-medium">Acme Inc</TableCell>
-                      <TableCell>$100.00</TableCell>
-                      <TableCell>2022-06-23</TableCell>
-                      <TableCell>Monthly</TableCell>
-                      <TableCell>Basic</TableCell>
-                      <TableCell className="hidden md:table-cell">
+          </TableHeader>
+          <TableBody>
+            {filteredSubscriptions.map((subscription, index) => (
+              <TableRow key={subscription.id}>
+                <TableCell className="font-medium">{index + 1}</TableCell>
+                <TableCell className="font-medium">{subscription.name}</TableCell>
+                <TableCell>{subscription.cost} {subscription.currency}</TableCell>
+                <TableCell>{subscription.date}</TableCell>
+                <TableCell>{subscription.period}</TableCell>
+                <TableCell>{subscription['paymentType']}</TableCell>
+                <TableCell className="hidden md:table-cell">
+               
                         <Button size="icon" variant="outline">
                           <TrashIcon className="h-4 w-4" />
                           <span className="sr-only">Delete</span>
                         </Button>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">2</TableCell>
-                      <TableCell className="font-medium">Acme Inc</TableCell>
-                      <TableCell>$200.00</TableCell>
-                      <TableCell>2022-06-23</TableCell>
-                      <TableCell>Annual</TableCell>
-                      <TableCell>Premium</TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        <Button size="icon" variant="outline">
-                          <TrashIcon className="h-4 w-4" />
-                          <span className="sr-only">Delete</span>
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </CardContent>
+                     
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
             </Card>
+            <Card>
+          <CardContent>
+          <PaymentChart/>
+        </CardContent>
+        </Card>
           </div>
         </div>
       </main>
+      
     </div>
   )
 }
@@ -264,6 +703,7 @@ function SearchIcon(props) {
     </svg>
   )
 }
+
 
 
 function TrashIcon(props) {
@@ -361,8 +801,21 @@ function Analyze(){
             <CardTitle className="text-lg font-semibold">Revenue Distribution</CardTitle>
           </CardHeader>
           <CardContent>
-            <PieChart className="w-full aspect-[4/3]" />
+            <PieChart className="w-full aspect-[4/3]"/>
           </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">Revenue Distribution</CardTitle>
+          </CardHeader>
+          <CardContent>
+          <CurvedlineChart className="w-full aspect-[4/3]" />
+        </CardContent>
+        </Card>
+        <Card>
+          <CardContent>
+          <PaymentChart/>
+        </CardContent>
         </Card>
       </div>
       <div className="mt-8">
@@ -528,6 +981,75 @@ function DollarSignIcon(props) {
 }
 
 
+function Radialbar1(){
+  const transformedDataradialbar = data.subscriptions.reduce((acc, curr) => {
+    const existing = acc.find(a => a.paymentType === curr.paymentType);
+    if (existing) {
+      existing.cost += Number(curr.cost);
+    } else {
+      acc.push({
+        paymentType: curr.paymentType,
+        cost: Number(curr.cost),
+        subscription: curr.name
+      });
+    }
+    return acc;
+  }, []);
+  return(
+    <div className="w-full aspect-[4/3]"> <ResponsiveRadialBar
+    data={transformedDataradialbar}
+    keys={['cost']}
+    indexBy="paymentType"
+    margin={{ top: 50, right: 80, bottom: 50, left: 80 }}
+    maxValue="auto"
+    curve="linearClosed"
+    borderWidth={2}
+    borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+    gridLevels={5}
+    gridShape="circular"
+    gridLabelOffset={18}
+    enableDots={true}
+    dotSize={8}
+    dotColor={{ theme: 'background' }}
+    dotBorderWidth={2}
+    dotBorderColor={{ from: 'color' }}
+    enableDotLabel={true}
+    dotLabel="value"
+    dotLabelYOffset={-12}
+    colors={{ scheme: 'nivo' }}
+    fillOpacity={0.25}
+    blendMode="multiply"
+    animate={true}
+    motionConfig="wobbly"
+    isInteractive={true}
+    legends={[
+      {
+        anchor: 'bottom',
+        direction: 'row',
+        justify: false,
+        translateX: 0,
+        translateY: 56,
+        itemsSpacing: 2,
+        itemWidth: 100,
+        itemHeight: 18,
+        itemTextColor: '#999',
+        itemDirection: 'left-to-right',
+        itemOpacity: 1,
+        symbolSize: 18,
+        symbolShape: 'circle',
+        effects: [
+          {
+            on: 'hover',
+            style: {
+              itemTextColor: '#000'
+            }
+          }
+        ]
+      }
+    ]}
+  /></div>
+  )
+}
 function PieChart(props) {
   return (
     <div {...props}>
@@ -595,5 +1117,46 @@ function UsersIcon(props) {
       <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </svg>
+  )
+}
+
+
+function PaymentChart() {
+
+
+  const paymentTypes = {};
+  data.subscriptions.forEach(sub => {
+      if (paymentTypes[sub.paymentType]) {
+          paymentTypes[sub.paymentType] += parseFloat(sub.cost);
+      } else {
+          paymentTypes[sub.paymentType] = parseFloat(sub.cost);
+      }
+  });
+  
+  const chartData = Object.keys(paymentTypes).map(key => ({
+      id: key,
+      label: key,
+      value: paymentTypes[key],
+  }));
+
+  return (
+      <div style={{ height: 400,width:400 }}>
+          <ResponsivePie
+              data={chartData}
+              margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+              innerRadius={0.5}
+              padAngle={0.7}
+              cornerRadius={3}
+              activeOuterRadiusOffset={8}
+              borderWidth={1}
+              borderColor={{ from: 'color', modifiers: [ [ 'darker', 0.2 ] ] }}
+              arcLinkLabelsSkipAngle={10}
+              arcLinkLabelsTextColor="#333333"
+              arcLinkLabelsThickness={2}
+              arcLinkLabelsColor={{ from: 'color' }}
+              arcLabelsSkipAngle={10}
+              arcLabelsTextColor={{ from: 'color', modifiers: [ [ 'darker', 2 ] ] }}
+          />
+      </div>
   )
 }
