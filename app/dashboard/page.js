@@ -16,6 +16,7 @@ import { DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuLabel, Dropd
 import { Label } from "@/components/ui/label"
 import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { BsRobot } from "react-icons/bs";
 
 
 
@@ -49,7 +50,7 @@ var data = {
       "period": "monthly",
       "nextPayment": "No",
       "paymentType": "Credit Card",
-      "category": "Entertainment",
+      "category": "Sports",
       "reminder": "3",
       "type": "One time",
       "notes": "This is a note for Amazon Prime Video.",
@@ -66,7 +67,7 @@ var data = {
       "period": "weekly",
       "nextPayment": "2024-01-21",
       "paymentType": "Debit Card",
-      "category": "Entertainment",
+      "category": "Productivity",
       "reminder": "3",
       "type": "Recurring",
       "notes": "This is a note for Disney+.",
@@ -79,11 +80,11 @@ var data = {
       "cost": "20",
       "currency": "INR",
       "date": "2024-01-13",
-      "valid": false,
+      "valid": true,
       "period": "annually",
       "nextPayment": "NO",
       "paymentType": "Bank Account",
-      "category": "Entertainment",
+      "category": "Productivity",
       "reminder": "3",
       "type": "One time",
       "notes": "This is a note for Hulu.",
@@ -110,6 +111,7 @@ var data = {
   ]
 }
 
+const prevMonthsTotals = [12, 32, 43, 45]; 
 
 
 
@@ -291,6 +293,35 @@ function Subscriptionform({handl}){
   'Microsoft Office 365'];
   const [suggestedSubscriptions, setSuggestedSubscriptions] = useState([]);
 
+  const [formData, setFormData] = useState({
+    name: '',
+    cost: '',
+    currency: '',
+    date: '',
+    period: '',
+    paymentType: '',
+    category: '',
+    reminder: '',
+    type: '',
+    planName: '',
+    notes: ''
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [name]: value
+    }));
+  };
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Here you would typically send formData to your backend or state management store
+    console.log(formData);
+  };
+
+
   const handleSubscriptionNameChange = (e) => {
     const inputValue = e.target.value;
     setSubscriptionName(inputValue);
@@ -319,7 +350,7 @@ function Subscriptionform({handl}){
         className="inline-flex items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
         onClick={()=>{handl(false)}}
       >
-        <ArrowLeftIcon className="w-4 h-4 mr-2" />
+        <ArrowLeftIcon className="w-4 h-4 mr-2" /> 
         Back
       </button>
     </div>
@@ -345,41 +376,31 @@ function Subscriptionform({handl}){
          <div className="grid grid-cols-2 gap-4">
            <div className="space-y-2">
              <Label htmlFor="cost">Cost</Label>
-             <Input id="cost" placeholder="Enter cost" type="number" />
+             <Input id="cost" placeholder="Enter cost" type="number" name="cost" value={formData.cost} onChange={handleChange} />
            </div>
            <div className="space-y-2">
              <Label htmlFor="currency">Currency</Label>
-             <Select>
-               <SelectTrigger id="currency">
-                 <SelectValue placeholder="Select" />
-               </SelectTrigger>
-               <SelectContent>
-                 <SelectItem value="usd">USD</SelectItem>
-                 <SelectItem value="eur">EUR</SelectItem>
-                 <SelectItem value="gbp">GBP</SelectItem>
-                 <SelectItem value="jpy">JPY</SelectItem>
-               </SelectContent>
-             </Select>
+             <select id="currency" name="currency" value={formData.currency} onChange={handleChange}>
+          <option value="usd">USD</option>
+          <option value="eur">EUR</option>
+          <option value="gbp">GBP</option>
+          <option value="jpy">JPY</option>
+        </select>
            </div>
          </div>
          <div className="space-y-2">
            <Label htmlFor="subscription-date">Subscription Date</Label>
-           <Input id="subscription-date" type="date" />
+           <Input id="subscription-date" name="date" type="date" value={formData.date} onChange={handleChange} />
          </div>
          <div className="grid grid-cols-2 gap-4">
            <div className="space-y-2">
              <Label htmlFor="period">Period</Label>
-             <Select>
-               <SelectTrigger id="period">
-                 <SelectValue placeholder="Select" />
-               </SelectTrigger>
-               <SelectContent>
-                 <SelectItem value="daily">Daily</SelectItem>
-                 <SelectItem value="weekly">Weekly</SelectItem>
-                 <SelectItem value="monthly">Monthly</SelectItem>
-                 <SelectItem value="annually">Annually</SelectItem>
-               </SelectContent>
-             </Select>
+             <select id="period" name="period" value={formData.period} onChange={handleChange}>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+          <option value="annually">Annually</option>
+        </select>
            </div>
            <div className="space-y-2">
              <Label htmlFor="payment-type">Payment Type</Label>
@@ -723,13 +744,12 @@ function calculateUpcomingPayments(data) {
       daysUntilNextPayment: getDaysUntilNextPayment(sub.nextPayment, sub.period),
   }));
 
-  // Sort by days until next payment
+  
   upcomingPayments.sort((a, b) => a.daysUntilNextPayment - b.daysUntilNextPayment);
 
-  // Select the four most upcoming payments
+
   const fourUpcomingPayments = upcomingPayments.slice(0, 4);
 
-  // Format for output
   return fourUpcomingPayments.map(sub => `${sub.name} in ${sub.daysUntilNextPayment} days`);
 }
 
@@ -757,26 +777,6 @@ function ArrowLeftIcon(props) {
 }
 
 
-function Package2Icon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z" />
-      <path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9" />
-      <path d="M12 3v6" />
-    </svg>
-  )
-}
 
 
 function SearchIcon(props) {
@@ -832,6 +832,9 @@ function Settings(){
   )
 }
 
+import {runai} from "@/lib/gen"
+
+
 function Analyze(){
   const [subscriptionStats, setSubscriptionStats] = useState({
     totalCost: 0,
@@ -840,10 +843,15 @@ function Analyze(){
     upcomingSubscriptions: 0,
 });
 
+const [geminitells, setgeminitells] = useState("")
+
 useEffect(() => {
 
     calculateSubscriptionStats(data);
+    let a = runai(data)
+    setgeminitells(a)
 }, []);
+
 
 const calculateSubscriptionStats = (data) => {
     let totalCost = 0;
@@ -920,6 +928,14 @@ const calculateSubscriptionStats = (data) => {
           </CardContent>
         </Card>
       </div>
+      <Card className="mt-3 px-3 pt-4">
+      <CardContent className="mt-3 px-3">
+      <div>
+      <BsRobot className="w-9 h-auto mr-2" />
+      <p className="">
+        
+{geminitells}
+      </p></div> </CardContent></Card>
       <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-2">
         <Card>
           <CardHeader>
@@ -931,15 +947,15 @@ const calculateSubscriptionStats = (data) => {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg font-semibold">Revenue Distribution</CardTitle>
+            <CardTitle className="text-lg font-semibold">Cost projection</CardTitle>
           </CardHeader>
           <CardContent>
-          <CurvedlineChart className="w-full aspect-[4/3]" />
+          <MyprojBar dat={data} className="w-full aspect-[4/3]" />
         </CardContent>
         </Card>
         <Card>
           <CardContent>
-          <PaymentChart/>
+          <SankeyChart data={data}/>
         </CardContent>
         </Card>
         <Card>
@@ -1014,81 +1030,6 @@ function CreditCardIcon(props) {
 }
 
 
-function CurvedlineChart(props) {
-  return (
-    <div {...props}>
-      <ResponsiveLine
-        data={[
-          {
-            id: "Desktop",
-            data: [
-              { x: "Jan", y: 43 },
-              { x: "Feb", y: 137 },
-              { x: "Mar", y: 61 },
-              { x: "Apr", y: 145 },
-              { x: "May", y: 26 },
-              { x: "Jun", y: 154 },
-            ],
-          },
-          {
-            id: "Mobile",
-            data: [
-              { x: "Jan", y: 60 },
-              { x: "Feb", y: 48 },
-              { x: "Mar", y: 177 },
-              { x: "Apr", y: 78 },
-              { x: "May", y: 96 },
-              { x: "Jun", y: 204 },
-            ],
-          },
-        ]}
-        margin={{ top: 10, right: 10, bottom: 40, left: 40 }}
-        xScale={{
-          type: "point",
-        }}
-        yScale={{
-          type: "linear",
-          min: 0,
-          max: "auto",
-        }}
-        curve="monotoneX"
-        axisTop={null}
-        axisRight={null}
-        axisBottom={{
-          tickSize: 0,
-          tickPadding: 16,
-        }}
-        axisLeft={{
-          tickSize: 0,
-          tickValues: 5,
-          tickPadding: 16,
-        }}
-        colors={["#2563eb", "#e11d48"]}
-        pointSize={6}
-        useMesh={true}
-        gridYValues={6}
-        theme={{
-          tooltip: {
-            chip: {
-              borderRadius: "9999px",
-            },
-            container: {
-              fontSize: "12px",
-              textTransform: "capitalize",
-              borderRadius: "6px",
-            },
-          },
-          grid: {
-            line: {
-              stroke: "#f3f4f6",
-            },
-          },
-        }}
-        role="application"
-      />
-    </div>
-  )
-}
 
 
 function DollarSignIcon(props) {
@@ -1112,121 +1053,6 @@ function DollarSignIcon(props) {
 }
 
 
-function Radialbar1(){
-  const transformedDataradialbar = data.subscriptions.reduce((acc, curr) => {
-    const existing = acc.find(a => a.paymentType === curr.paymentType);
-    if (existing) {
-      existing.cost += Number(curr.cost);
-    } else {
-      acc.push({
-        paymentType: curr.paymentType,
-        cost: Number(curr.cost),
-        subscription: curr.name
-      });
-    }
-    return acc;
-  }, []);
-  return(
-    <div className="w-full aspect-[4/3]"> <ResponsiveRadialBar
-    data={transformedDataradialbar}
-    keys={['cost']}
-    indexBy="paymentType"
-    margin={{ top: 50, right: 80, bottom: 50, left: 80 }}
-    maxValue="auto"
-    curve="linearClosed"
-    borderWidth={2}
-    borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
-    gridLevels={5}
-    gridShape="circular"
-    gridLabelOffset={18}
-    enableDots={true}
-    dotSize={8}
-    dotColor={{ theme: 'background' }}
-    dotBorderWidth={2}
-    dotBorderColor={{ from: 'color' }}
-    enableDotLabel={true}
-    dotLabel="value"
-    dotLabelYOffset={-12}
-    colors={{ scheme: 'nivo' }}
-    fillOpacity={0.25}
-    blendMode="multiply"
-    animate={true}
-    motionConfig="wobbly"
-    isInteractive={true}
-    legends={[
-      {
-        anchor: 'bottom',
-        direction: 'row',
-        justify: false,
-        translateX: 0,
-        translateY: 56,
-        itemsSpacing: 2,
-        itemWidth: 100,
-        itemHeight: 18,
-        itemTextColor: '#999',
-        itemDirection: 'left-to-right',
-        itemOpacity: 1,
-        symbolSize: 18,
-        symbolShape: 'circle',
-        effects: [
-          {
-            on: 'hover',
-            style: {
-              itemTextColor: '#000'
-            }
-          }
-        ]
-      }
-    ]}
-  /></div>
-  )
-}
-function PieChart(props) {
-  return (
-    <div {...props}>
-      <ResponsivePie
-        data={[
-          { id: "Jan", value: 111 },
-          { id: "Feb", value: 157 },
-          { id: "Mar", value: 129 },
-          { id: "Apr", value: 150 },
-          { id: "May", value: 119 },
-          { id: "Jun", value: 72 },
-        ]}
-        sortByValue
-        margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
-        cornerRadius={0}
-        padAngle={0}
-        borderWidth={1}
-        borderColor={"#ffffff"}
-        enableArcLinkLabels={false}
-        arcLabel={(d) => `${d.id}`}
-        arcLabelsTextColor={"#ffffff"}
-        arcLabelsRadiusOffset={0.65}
-        colors={["#1a1a1a"]}
-        
-        theme={{
-          labels: {
-            text: {
-              fontSize: "18px",
-            },
-          },
-          tooltip: {
-            chip: {
-              borderRadius: "9999px",
-            },
-            container: {
-              fontSize: "12px",
-              textTransform: "capitalize",
-              borderRadius: "6px",
-            },
-          },
-        }}
-        role="application"
-      />
-    </div>
-  )
-}
 
 
 function UsersIcon(props) {
@@ -1401,4 +1227,175 @@ const CostBarChartmain = ({ data }) => {
       />
     </div>
   );
+};
+
+
+import { ResponsiveSankey } from '@nivo/sankey';
+
+const SankeyChart = ({ data }) => {
+ 
+  const { subscriptions } = data;
+
+  const nodes = [];
+  const links = [];
+
+  const categories = [...new Set(subscriptions.map(sub => sub.category))];
+  const paymentTypes = [...new Set(subscriptions.map(sub => sub.paymentType))];
+
+  categories.forEach((category, index) => {
+    nodes.push({ id: category, color: "hsl(5, 70%, 50%)" });
+  });
+
+  paymentTypes.forEach((type, index) => {
+    nodes.push({ id: type, color: "hsl(100, 70%, 50%)" });
+  });
+
+  subscriptions.forEach(sub => {
+    if (sub.valid) {
+      links.push({
+        source: sub.paymentType,
+        target: sub.category,
+        value: parseInt(sub.cost, 10)
+      });
+    }
+  });
+
+  const sankeyData = { nodes, links };
+
+  return (
+    <div className="w-[600px] h-[400px]" >
+      <ResponsiveSankey
+        data={sankeyData}
+        margin={{ top: 40, right: 160, bottom: 40, left: 50 }}
+        align="justify"
+        colors={{ scheme: 'category10' }}
+        nodeOpacity={1}
+        nodeThickness={18}
+        nodeInnerPadding={3}
+        nodeSpacing={24}
+        nodeBorderWidth={0}
+        nodeBorderColor={{ from: 'color', modifiers: [['darker', 0.8]] }}
+        linkOpacity={0.5}
+        linkHoverOthersOpacity={0.1}
+        enableLinkGradient={true}
+        labelPosition="outside"
+        labelOrientation="vertical"
+        labelPadding={16}
+        labelTextColor={{ from: 'color', modifiers: [['darker', 1]] }}
+        animate={true}
+        motionStiffness={90}
+        motionDamping={13}
+      />
+    </div>
+  );
+};
+
+
+
+import { DateTime } from 'luxon';
+
+
+const  MyprojBar = () => {
+
+    
+    const currentMonthTotal = 1928.57; 
+   
+
+
+
+let summ = history.reduce((partialSum, history) => partialSum + history, 0) + currentMonthTotal
+
+const nextMonthPrediction = summ/5
+
+const dataTotals = [...prevMonthsTotals, currentMonthTotal, nextMonthPrediction];
+
+
+   
+    const getMonthNames = (totals) => {
+        let monthNames = [];
+        const now = DateTime.now();
+        for (let i = totals.length - 2; i >= 0; i--) { 
+            const month = now.minus({ months: i }).toFormat('MMMM');
+            monthNames.unshift(month);
+        }
+        monthNames.push('Next Month'); 
+        return monthNames;
+    };
+
+    const monthNames = getMonthNames(dataTotals);
+
+   
+    const data = [
+        {
+            id: "Total Money",
+            data: monthNames.map((month, index) => ({
+                x: month,
+                y: dataTotals[index]
+            }))
+        }
+    ];
+
+    return (
+      <div className="w-full h-[350px]">
+        <ResponsiveLine
+            data={data}
+            margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+            xScale={{ type: 'point' }}
+            yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
+            axisTop={null}
+            axisRight={null}
+            axisBottom={{
+                orient: 'bottom',
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legend: 'Month',
+                legendOffset: 36,
+                legendPosition: 'middle'
+            }}
+            axisLeft={{
+                orient: 'left',
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legend: 'Total Money (INR)',
+                legendOffset: -40,
+                legendPosition: 'middle'
+            }}
+            colors={{ scheme: 'nivo' }}
+            pointSize={10}
+            pointColor={{ theme: 'background' }}
+            pointBorderWidth={2}
+            pointBorderColor={{ from: 'serieColor' }}
+            pointLabelYOffset={-12}
+            useMesh={true}
+            legends={[
+                {
+                    anchor: 'bottom-right',
+                    direction: 'column',
+                    justify: false,
+                    translateX: 100,
+                    translateY: 0,
+                    itemsSpacing: 0,
+                    itemDirection: 'left-to-right',
+                    itemWidth: 80,
+                    itemHeight: 20,
+                    itemOpacity: 0.75,
+                    symbolSize: 12,
+                    symbolShape: 'circle',
+                    symbolBorderColor: 'rgba(0, 0, 0, .5)',
+                    effects: [
+                        {
+                            on: 'hover',
+                            style: {
+                                itemBackground: 'rgba(0, 0, 0, .03)',
+                                itemOpacity: 1
+                            }
+                        }
+                    ]
+                }
+            ]}
+        />
+        </div>
+    );
 };

@@ -43,23 +43,3 @@ export async function POST(req) {
   return new Response("OK")
   
 }
-
-export async function POST(req) {
-
-  var inno = await req.json()
-  await prisma.innovations.create({
-      data: {
-          title: inno.title,
-          hash: inno.hash,
-          author: inno.author,
-          pass: inno.pass,
-          date: inno.date,
-          chain: inno.chain
-
-      }
-  })
-
-
-  return new Response("OK")
-
-}

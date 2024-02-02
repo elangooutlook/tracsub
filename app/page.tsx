@@ -20,7 +20,40 @@ return (
     <div className="w-screen overflow-hidden h-screen flex flex-row" >
 <div className="w-1/2 h-screen bg-[#18181B] border-1 border-[#27272A]">
 
-
+<div className="antialiased flex min-h-screen flex-col items- justify-start mt-[60vh] px-14">
+      <div className=" gap-4 flex flex-col   ">
+        <div className="max-w-1/2">
+        <h1 className="font-semibold text-4xl overflow-wrap break-word text-[#fafafa]">Welcome, </h1>
+        <p className="font-semibold overflow-wrap break-word text-[#fafafa] text-2xl overflow-wrap break-word">{session ? session.user.email : 'Guest!'}</p>
+        </div>
+        {session ? (
+          <div className="flex gap-2 flex-row">
+            {!loading && <><br/><Link href="/dashboard" className="p-2 bg-[#FAFAFA] text-[#27272A] rounded-md">Dashboard</Link></>} 
+          <button className="bg-[#09090B] border-1 border-[#27272A] font-semibold rounded px-4 py-2 text-[#FAFAFA]"
+            onClick={async (e) => {
+              e.preventDefault()
+              setLoading(true);
+              const { error } = await supabase.auth.signOut();
+              setLoading(false);
+              if (!error) setSession(null) 
+            }}
+            disabled={loading}>
+            {loading ? 'Loading' : 'Logout'}
+            
+          </button>
+          
+          
+          </div>
+        ):(
+          
+          <Link href="/auth/login" 
+            className="bg-[#fafafa] w-1/2 font-semibold rounded px-4 py-2 text-[#27272A]">
+            Login
+          </Link>
+        )}        
+      </div>
+    </div>
+    
 </div>
 <div className="w-1/2 !h-screen bg-[#09090B]">
 
@@ -28,32 +61,6 @@ return (
 </div>
 
     </div>
-    <div className="antialiased flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="flex gap-4 items-center">
-        <h1 className="font-semibold">Welcome, {session ? session.user.email : 'Guest!'}</h1>
-
-        {session ? (
-          <>
-          <button className="bg-slate-900 font-semibold rounded px-4 py-2 text-white"
-            onClick={async (e) => {
-              e.preventDefault()
-              setLoading(true);
-              const { error } = await supabase.auth.signOut();
-              setLoading(false);
-              if (!error) setSession(null)
-            }}
-            disabled={loading}>
-            {loading ? 'Loading' : 'Logout'}
-            
-          </button>
-          {!loading && <><br/><Link href="/dashboard" className="m-4 p-2">Go to Dashboard</Link></>} </>
-        ):(
-          <Link href="/auth/login" 
-            className="bg-slate-900 font-semibold rounded px-4 py-2 text-white">
-            Login
-          </Link>
-        )}        
-      </div>
-    </div></div>
+   </div>
   )
 }

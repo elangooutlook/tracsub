@@ -19,15 +19,15 @@ export default function Page(){
 
   
   return (
-    <main className="antialiased flex min-h-screen flex-col items-center justify-center bg-slate-100">
+    <main className="antialiased flex min-h-screen flex-col items-center justify-center bg-[#fafafa]">
       {alert && <Alert msg={alert.msg} type={alert.type}/>}
-      <div className="shadow-lg rounded-md p-6 border bg-white">
+      <div className="shadow-lg rounded-md p-6 border bg-[#fafafa]">
         <h1 className="font-semibold mb-2">Login</h1>
         <form className="flex flex-col gap-4 mt-4">
           <div className="flex flex-col gap-1">
             <input type="email" 
               id="email"
-              className="px-3 py-2 text-sm text-slate-400 border border-slate-300 rounded outline-none"
+              className="px-3 py-2 text-sm text-[#272727] border border-[#d4d4d4] rounded outline-none"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"/>
@@ -38,14 +38,14 @@ export default function Page(){
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="px-3 py-2 text-sm text-slate-400 border border-slate-300 rounded outline-none"
+              className="px-3 py-2 text-sm text-[#272727] border border-[#d4d4d4] rounded outline-none"
               placeholder="Password"/>
           </div>
           
           <hr />
 
           <button type="button"
-            className="bg-slate-900 font-semibold rounded py-2 text-white"
+            className="bg-[#27272A] font-semibold rounded py-2 text-[#fafafa]"
             onClick={async (e) => {
               e.preventDefault()
               setLoading(true);
@@ -58,7 +58,7 @@ export default function Page(){
             {loading ? '...' : 'Login'}
           </button>
           <button type="button"
-            className="bg-slate-900 font-semibold rounded py-2 text-white"
+            className="bg-[#27272A] font-semibold rounded py-2 text-[#fafafa]"
             onClick={async (e) => {
               e.preventDefault()
               const { data, error } = await supabase.auth.signUp({email, password});
@@ -94,3 +94,5 @@ const Alert: React.FC<AlertProps> = ({ type, msg }) => {
     <span>{msg}</span>
   </div>)
 }
+
+
