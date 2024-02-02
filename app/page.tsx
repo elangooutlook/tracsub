@@ -16,6 +16,18 @@ export default function Home() {
   },[])
 
 return (
+  <div>
+    <div className="w-screen overflow-hidden h-screen flex flex-row" >
+<div className="w-1/2 h-screen bg-[#18181B] border-1 border-[#27272A]">
+
+
+</div>
+<div className="w-1/2 !h-screen bg-[#09090B]">
+
+
+</div>
+
+    </div>
     <div className="antialiased flex min-h-screen flex-col items-center justify-between p-24">
       <div className="flex gap-4 items-center">
         <h1 className="font-semibold">Welcome, {session ? session.user.email : 'Guest!'}</h1>
@@ -42,6 +54,6 @@ return (
           </Link>
         )}        
       </div>
-    </div>
+    </div></div>
   )
 }

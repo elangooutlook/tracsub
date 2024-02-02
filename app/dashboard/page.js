@@ -6,7 +6,7 @@ import { ResponsiveLine } from "@nivo/line"
 import { ResponsivePie } from "@nivo/pie"
 import { ResponsiveRadialBar } from '@nivo/radial-bar'
 import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/ui/table"
-
+import { GiBearFace } from "react-icons/gi";
 import { IoBagCheckSharp,IoSettings,IoPieChart } from "react-icons/io5";
 import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
@@ -41,7 +41,7 @@ var data = {
     },
     {
       "id": "2",
-      "name": "Amazon Prime Video",
+      "name": "Amazon",
       "cost": "150",
       "currency": "INR",
       "date": "2024-01-15",
@@ -173,17 +173,7 @@ export default function Component() {
               size="icon"
               variant="ghost"
             >
-              <img
-                alt="Avatar"
-                className="rounded-full"
-                height="32"
-                src="/placeholder.svg"
-                style={{
-                  aspectRatio: "32/32",
-                  objectFit: "cover",
-                }}
-                width="32"
-              />
+              <GiBearFace className="w-6 h-6"/>
               <span className="sr-only">Toggle user menu</span>
             </Button>
           </DropdownMenuTrigger>
@@ -198,7 +188,7 @@ export default function Component() {
         </DropdownMenu>
       </header>
 
-        {nav === 1 ? <Subscriptions/> : nav === 2 ? <Analyze/> : <Subscriptionform/>}
+        {nav === 1 ? <Subscriptions/> : nav === 2 ? <Analyze/> : <Settings/>}
 
         </ResizablePanel>
       </ResizablePanelGroup>
@@ -277,9 +267,28 @@ function PlusIcon(props) {
 }
 
 
-function Subscriptionform(){
+function Subscriptionform({handl}){
   const [subscriptionName, setSubscriptionName] = useState('');
-  const initialSubscriptions = ['Netflix', 'Spotify', 'Amazon Prime', 'Hulu'];
+  const initialSubscriptions = ['Netflix',
+  'Spotify',
+  'Amazon Prime',
+  'Hulu',
+  'Disney+',
+  'Apple Music',
+  'HBO Max',
+  'YouTube Premium',
+  'Audible',
+  'Crunchyroll',
+  'Paramount+',
+  'Peacock',
+  'Showtime',
+  'Starz',
+  'CBS All Access',
+  'Tidal',
+  'Sling TV',
+  'ESPN+',
+  'Adobe Creative Cloud',
+  'Microsoft Office 365'];
   const [suggestedSubscriptions, setSuggestedSubscriptions] = useState([]);
 
   const handleSubscriptionNameChange = (e) => {
@@ -304,7 +313,16 @@ function Subscriptionform(){
   return(
  
 
-     <Card className="w-full h-full max-w-2xl">
+     <Card className="w-full h-full m-3 max-w-2xl">
+       <div className="flex items-center justify-start w-full p-4">
+      <button 
+        className="inline-flex items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
+        onClick={()=>{handl(false)}}
+      >
+        <ArrowLeftIcon className="w-4 h-4 mr-2" />
+        Back
+      </button>
+    </div>
        <CardHeader>
          <CardTitle>Add Subscription</CardTitle>
          <CardDescription>Fill your new subscription details</CardDescription>
@@ -446,7 +464,7 @@ function Subscriptions() {
   const paymentTypes = ['Cash', 'Credit Card', 'Debit Card', 'Bank Account'];
   const activeStatuses = ['Active', 'Inactive'];
   const categories = ['Streaming', 'Music', 'Productivity',"Tools", 'Educational', 'News', 'Travel', 'Lifestyle', 'Other'];
-
+const [showform,setshowform] = useState(false)
   const [searchQuery, setSearchQuery] = useState('');
   const filteredSubscriptions = data.subscriptions.filter(subscription => {
     // Check for case-insensitive match in name or plan-name
@@ -499,11 +517,12 @@ function Subscriptions() {
         <h1 className="text-xl font-semibold text-gray-700 dark:text-gray-200">Manage Subscriptions</h1>
         <div className="flex items-center space-x-2">
           
-          <Button variant="primary">+ Add Subscription</Button>
+          <Button onClick={()=>{setshowform(true)}} variant="primary">+ Add Subscription</Button>
         </div>
       </header>
 
 
+{showform? <Subscriptionform handl = {setshowform}/> :
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
         
         <div className="flex flex-col md:grid md:grid-cols-6 gap-6">
@@ -630,16 +649,92 @@ function Subscriptions() {
             </Card>
             <Card>
           <CardContent>
-          <PaymentChart/>
+          <Upcomningtracker/>
+          <RadialBarChart2 data={data} />
+          
+
         </CardContent>
         </Card>
           </div>
         </div>
-      </main>
+      </main>}
       
     </div>
   )
 }
+
+function Upcomningtracker(){
+  return(
+    <div className="flex flex-col ">
+      <div className="flex flex-row items-center ml-[5px] mt-[10px] md:ml-3 md:mt-8 md:mb-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <circle cx="7" cy="7" r="3" fill="#242424" className="animate-pulse" />
+                    <circle cx="7" cy="7" r="6.5" stroke="#242424" className="animate-pulse" />
+                    <circle cx="7" cy="7" r="4.5" stroke="#242424" />
+                </svg>
+                <h2 className="mx-2">Upcoming Charges:</h2>
+            </div>
+
+            <div>
+
+            <div className="flex flex-col space-y-4 overflow-y-auto scrollbar-hidden p-4">
+      <div className="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-800">
+        <h3 className="font-semibold">Netflix</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">in 1 day</p>
+      </div>
+      <div className="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-800">
+        <h3 className="font-semibold">Apple Music</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">in 1 day</p>
+      </div>
+      <div className="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-800">
+        <h3 className="font-semibold">Disney+</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">in 2 days</p>
+      </div>
+    </div>
+            </div>
+
+    </div>
+  )
+}
+
+function calculateUpcomingPayments(data) {
+  const today = new Date('2024-02-02');
+
+  const getDaysUntilNextPayment = (nextPayment, period) => {
+      let nextPaymentDate = new Date(nextPayment);
+      const oneDay = 24 * 60 * 60 * 1000; // milliseconds in one day
+      while (nextPaymentDate <= today) {
+          if (period === 'daily') {
+              nextPaymentDate = new Date(nextPaymentDate.getTime() + oneDay);
+          } else if (period === 'weekly') {
+              nextPaymentDate = new Date(nextPaymentDate.getTime() + 7 * oneDay);
+          } else if (period === 'monthly') {
+              nextPaymentDate = new Date(nextPaymentDate.setMonth(nextPaymentDate.getMonth() + 1));
+          } else if (period === 'annually') {
+              nextPaymentDate = new Date(nextPaymentDate.setFullYear(nextPaymentDate.getFullYear() + 1));
+          }
+      }
+      return Math.round((nextPaymentDate - today) / oneDay);
+  };
+
+  const validSubscriptions = data.subscriptions.filter(sub => sub.valid && sub.nextPayment.toLowerCase() !== 'no');
+  const upcomingPayments = validSubscriptions.map(sub => ({
+      name: sub.name,
+      daysUntilNextPayment: getDaysUntilNextPayment(sub.nextPayment, sub.period),
+  }));
+
+  // Sort by days until next payment
+  upcomingPayments.sort((a, b) => a.daysUntilNextPayment - b.daysUntilNextPayment);
+
+  // Select the four most upcoming payments
+  const fourUpcomingPayments = upcomingPayments.slice(0, 4);
+
+  // Format for output
+  return fourUpcomingPayments.map(sub => `${sub.name} in ${sub.daysUntilNextPayment} days`);
+}
+
+
+console.log(calculateUpcomingPayments(data));
 
 function ArrowLeftIcon(props) {
   return (
@@ -738,6 +833,44 @@ function Settings(){
 }
 
 function Analyze(){
+  const [subscriptionStats, setSubscriptionStats] = useState({
+    totalCost: 0,
+    numberOfSubscriptions: 0,
+    recurringSubscriptions: 0,
+    upcomingSubscriptions: 0,
+});
+
+useEffect(() => {
+
+    calculateSubscriptionStats(data);
+}, []);
+
+const calculateSubscriptionStats = (data) => {
+    let totalCost = 0;
+    let recurringSubscriptions = 0;
+    let upcomingSubscriptions = 0;
+
+    data.subscriptions.forEach(sub => {
+        if (sub.valid) {
+            totalCost += parseInt(sub.cost);
+            if (sub.type === "Recurring") {
+                recurringSubscriptions += 1;
+            }
+            if (sub.nextPayment.toLowerCase() !== 'no') {
+                upcomingSubscriptions += 1;
+            }
+        }
+    });
+
+    setSubscriptionStats({
+        totalCost,
+        numberOfSubscriptions: data.subscriptions.length,
+        recurringSubscriptions,
+        upcomingSubscriptions,
+    });
+};
+
+
   return (
 
     <div className="flex flex-col w-full h-full">
@@ -752,8 +885,8 @@ function Analyze(){
             <DollarSignIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">+20.1% from last month</p>
+            <div className="text-2xl font-bold">{subscriptionStats.totalCost}</div>
+           
           </CardContent>
         </Card>
         <Card>
@@ -762,46 +895,38 @@ function Analyze(){
             <UsersIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">2350</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">+180.1% from last month</p>
+            <div className="text-2xl font-bold">{subscriptionStats.numberOfSubscriptions}</div>
+           
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Recoring</CardTitle>
+            <CardTitle className="text-sm font-medium">Recoring Amount</CardTitle>
             <CreditCardIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12,234</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">+19% from last month</p>
+            <div className="text-2xl font-bold">{subscriptionStats.recurringSubscriptions}</div>
+            
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Expiring Subscriptions</CardTitle>
+            <CardTitle className="text-sm font-medium">Upcoming Payments</CardTitle>
             <ActivityIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">573</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">+201 since last hour</p>
+            <div className="text-2xl font-bold">{subscriptionStats.upcomingSubscriptions}</div>
+           
           </CardContent>
         </Card>
       </div>
       <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg font-semibold">Sales Trend</CardTitle>
+            <CardTitle className="text-lg font-semibold">Subscriptions</CardTitle>
           </CardHeader>
           <CardContent>
-            <CurvedlineChart className="w-full aspect-[4/3]" />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">Revenue Distribution</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <PieChart className="w-full aspect-[4/3]"/>
+            <CostBarChartmain data={data} className="w-full aspect-[4/3]" />
           </CardContent>
         </Card>
         <Card>
@@ -817,6 +942,12 @@ function Analyze(){
           <PaymentChart/>
         </CardContent>
         </Card>
+        <Card>
+          <CardContent>
+          <RadialBarChart2 data={data} />
+        </CardContent>
+        </Card>
+        
       </div>
       <div className="mt-8">
         <Card>
@@ -1143,7 +1274,7 @@ function PaymentChart() {
       <div style={{ height: 400,width:400 }}>
           <ResponsivePie
               data={chartData}
-              margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+              margin={{ top: 40, right: 80, bottom: 20, left: 80 }}
               innerRadius={0.5}
               padAngle={0.7}
               cornerRadius={3}
@@ -1160,3 +1291,114 @@ function PaymentChart() {
       </div>
   )
 }
+
+const RadialBarChart2 = ({ data }) => {
+  // Process data to aggregate cost by paymentType
+  const paymentTypeTotals = data.subscriptions.reduce((acc, sub) => {
+    const paymentType = sub.paymentType;
+    const cost = parseInt(sub.cost, 10);
+    if (acc[paymentType]) {
+      acc[paymentType] += cost;
+    } else {
+      acc[paymentType] = cost;
+    }
+    return acc;
+  }, {});
+
+  // Transform aggregated data into the format expected by Nivo RadialBar
+  const chartData = Object.entries(paymentTypeTotals).map(([key, value]) => ({
+    id: key,
+    data: [{ x: key, y: value }],
+  }));
+
+  return (
+    <div className="h-[400px] p-4 my-4 w-[400px]" >
+      <ResponsiveRadialBar
+        data={chartData}
+        keys={['y']}
+        indexBy="x"
+        maxValue="auto"
+        innerRadius={0.5}
+        padding={0.2}
+        valueFormat=">-.2f"
+        colors={{ scheme: 'nivo' }}
+        borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
+        radialAxisStart={{ tickSize: 5, tickPadding: 5, tickRotation: 0, legend: '', legendOffset: 0 }}
+        circularAxisOuter={{ tickSize: 5, tickPadding: 12, tickRotation: 0, legend: 'payment type', legendOffset: 12 }}
+      />
+    </div>
+  );
+};
+
+import { ResponsiveBar } from '@nivo/bar';
+
+const CostBarChartmain = ({ data }) => {
+  const chartData = data.subscriptions.map(sub => ({
+    "Subscription": sub.name,
+    "Cost": parseInt(sub.cost, 10),
+  }));
+
+  return (
+    <div style={{ height: 400 }}>
+      <ResponsiveBar
+        data={chartData}
+        keys={['Cost']}
+        indexBy="Subscription"
+        margin={{ top: 50, right: 130, bottom: 120, left: 60 }} // Increased bottom margin to accommodate vertical labels
+        padding={0.3}
+        valueScale={{ type: 'linear' }}
+        indexScale={{ type: 'band', round: true }}
+        colors={{ scheme: 'nivo' }}
+        borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
+        axisTop={null}
+        axisRight={null}
+        axisBottom={{
+          tickSize: 5,
+          tickPadding: 5,
+          tickRotation: -90, // Rotate ticks for vertical alignment
+          legend: 'Subscription',
+          legendPosition: 'middle',
+          legendOffset: 80 // Adjusted for better spacing between labels and legend
+        }}
+        axisLeft={{
+          tickSize: 5,
+          tickPadding: 5,
+          tickRotation: 0,
+          legend: 'Cost',
+          legendPosition: 'middle',
+          legendOffset: -40
+        }}
+        labelSkipWidth={12}
+        labelSkipHeight={12}
+        labelTextColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
+        legends={[
+          {
+            dataFrom: 'keys',
+            anchor: 'bottom-right',
+            direction: 'column',
+            justify: false,
+            translateX: 120,
+            translateY: 0,
+            itemsSpacing: 2,
+            itemWidth: 100,
+            itemHeight: 20,
+            itemDirection: 'left-to-right',
+            itemOpacity: 0.85,
+            symbolSize: 20,
+            effects: [
+              {
+                on: 'hover',
+                style: {
+                  itemOpacity: 1
+                }
+              }
+            ]
+          }
+        ]}
+        animate={true}
+        motionStiffness={90}
+        motionDamping={15}
+      />
+    </div>
+  );
+};
