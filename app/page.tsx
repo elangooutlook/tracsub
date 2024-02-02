@@ -19,6 +19,31 @@ export default function Home() {
     .catch(err => { console.log("ERROR GET SESSION: ", err) })
   },[])
 
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      const handleServiceWorker = async () => {
+        const register = await navigator.serviceWorker.register("/sw.js");
+  
+        const subscription = await register.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: "BEvm8uwPLY2mscEIyBTGpi2PfNQRa4UX8yqBKHb1h0k3nPK92gvYJK1ZN51vxYsrluE2lgEeXnQXCxzLgC3sx4A",
+        });
+  
+        const res = await fetch("/api/subscribe", {
+          method: "POST",
+          body: JSON.stringify(subscription),
+          headers: {
+            "content-type": "application/json",
+          },
+        });
+  
+        const data = await res.json();
+        console.log(data);
+      };
+      handleServiceWorker();
+    }
+  }, []);
+  
 return (
   <div>
     <div className="w-screen overflow-hidden h-screen flex flex-row" >
