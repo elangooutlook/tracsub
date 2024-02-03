@@ -57,7 +57,9 @@ return (
         </div>
         {session ? (
           <div className="flex gap-2 flex-row">
-            {!loading && <><br/><Link href="/dashboard" className="p-2 bg-[#FAFAFA] text-[#27272A] rounded-md">Dashboard</Link></>} 
+            {!loading && <><br/> <Link href={`/dashboard?email=${encodeURIComponent(session.user.email)}`}>
+    <p className="p-2 bg-[#FAFAFA] text-[#27272A] rounded-md">Dashboard</p>
+  </Link></>} 
           <button className="bg-[#09090B] border-1 border-[#27272A] font-semibold rounded px-4 py-2 text-[#FAFAFA]"
             onClick={async (e) => {
               e.preventDefault()

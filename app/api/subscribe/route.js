@@ -37,7 +37,7 @@ export async function POST(req) {
     const notificationPayload = {
       title: "Subscription Reminder",
       body: "You have a upcoming subscription payment",
-      icon: "https://picsum.photos/200",
+      icon:"https://picsum.photos/200/300",
       data: {
         url: "https://tracsub.vercel.app/",
       },
@@ -48,7 +48,7 @@ export async function POST(req) {
       webpush.sendNotification(subscription, JSON.stringify(notificationPayload))
     )
   )
-   return Response.json("Notification sent")
+   return Response.json("Notification -->")
    
 
 

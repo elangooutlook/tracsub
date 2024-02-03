@@ -292,19 +292,21 @@ function Subscriptionform({handl}){
   'Adobe Creative Cloud',
   'Microsoft Office 365'];
   const [suggestedSubscriptions, setSuggestedSubscriptions] = useState([]);
+var sname = ""
 
   const [formData, setFormData] = useState({
-    name: '',
-    cost: '',
-    currency: '',
-    date: '',
-    period: '',
-    paymentType: '',
-    category: '',
-    reminder: '',
-    type: '',
-    planName: '',
-    notes: ''
+    "name": sname,
+    "cost": '',
+    "currency": '',
+    "date": '',
+    "period": '',
+    "paymentType": '',
+    "category": '',
+    "reminder": '',
+    "type": '',
+    "plan-name": '',
+    "notes": '',
+   " url":''
   });
 
   const handleChange = (e) => {
@@ -341,6 +343,13 @@ function Subscriptionform({handl}){
     setSuggestedSubscriptions([]);
   };
 
+  var sname = ""
+
+  function subnamechangehanf(){
+
+  }
+
+
   return(
  
 
@@ -362,7 +371,7 @@ function Subscriptionform({handl}){
        <div className="space-y-2">
     <Label htmlFor="subscription-name">Subscription Name</Label>
     <Input id="subscription-name" placeholder="Enter subscription name" value={subscriptionName}
-      onChange={handleSubscriptionNameChange} />
+      onChange={ handleSubscriptionNameChange} />
     {suggestedSubscriptions.length > 0 && (
       <ul>
         {suggestedSubscriptions.map((subscription, index) => (
@@ -404,54 +413,45 @@ function Subscriptionform({handl}){
            </div>
            <div className="space-y-2">
              <Label htmlFor="payment-type">Payment Type</Label>
-             <Select>
-               <SelectTrigger id="payment-type">
-                 <SelectValue placeholder="Select" />
-               </SelectTrigger>
-               <SelectContent>
-                 <SelectItem value="cash">Cash</SelectItem>
-                 <SelectItem value="credit-card">Credit Card</SelectItem>
-                 <SelectItem value="debit-card">Debit Card</SelectItem>
-                 <SelectItem value="bank-account">Bank Account</SelectItem>
-               </SelectContent>
-             </Select>
+             <select id="paymentType" name="paymentType" value={formData.paymentType} onChange={handleChange}>
+          <option value="cash">Cash</option>
+          <option value="credit-card">Credit Card</option>
+          <option value="debit-card">Debit Card</option>
+          <option value="bank-account">Bank Account</option>
+        </select>
            </div>
          </div>
          <div className="space-y-2">
            <Label htmlFor="category">Category</Label>
-           <Select>
-             <SelectTrigger id="category">
-               <SelectValue placeholder="Select" />
-             </SelectTrigger>
-             <SelectContent>
-               <SelectItem value="streaming">Streaming</SelectItem>
-               <SelectItem value="music">Music</SelectItem>
-               <SelectItem value="productivity-tools">Productivity Tools</SelectItem>
-               <SelectItem value="educational-platforms">Educational Platforms</SelectItem>
-               <SelectItem value="news">News</SelectItem>
-               <SelectItem value="travel">Travel</SelectItem>
-               <SelectItem value="lifestyle">Lifestyle</SelectItem>
-               <SelectItem value="other">Other</SelectItem>
-             </SelectContent>
-           </Select>
+           
+
+           <select id="category" name="category" value={formData.category} onChange={handleChange}>
+           <option value="streaming">Streaming</option>
+    <option value="music">Music</option>
+    <option value="productivity-tools">Productivity Tools</option>
+    <option value="educational-platforms">Educational Platforms</option>
+    <option value="news">News</option>
+    <option value="travel">Travel</option>
+    <option value="lifestyle">Lifestyle</option>
+    <option value="other">Other</option>
+          
+        </select>
+
+
+
          </div>
          <div className="space-y-2">
            <Label htmlFor="reminder">Reminder</Label>
-           <Input id="reminder" placeholder="Enter number of days for reminder" type="number" />
+           <input id="reminder" name="reminder" type="number" value={formData.reminder} onChange={handleChange} />
          </div>
          <div className="grid grid-cols-2 gap-4">
            <div className="space-y-2">
              <Label htmlFor="type">Type</Label>
-             <Select>
-               <SelectTrigger id="type">
-                 <SelectValue placeholder="Select" />
-               </SelectTrigger>
-               <SelectContent>
-                 <SelectItem value="recurring">Recurring</SelectItem>
-                 <SelectItem value="one-time">One Time</SelectItem>
-                 <SelectItem value="trial">Trial</SelectItem>
-               </SelectContent>
-             </Select>
+             <select id="type" name="type" value={formData.type} onChange={handleChange}>
+          <option value="recurring">Recurring</option>
+          <option value="one-time">One Time</option>
+          <option value="trail">Trial</option>
+        </select>
            </div>
            <div className="space-y-2">
              <Label htmlFor="plan-name">Plan Name</Label>
@@ -466,15 +466,23 @@ function Subscriptionform({handl}){
                  <SelectItem value="enterprise">Enterprise</SelectItem>
                </SelectContent>
              </Select>
+
+             <select id="planName" name="planName" value={formData.planName} onChange={handleChange}>
+          <option value="basic">Basic</option>
+          <option value="standard">Standard</option>
+          <option value="premium">Premium</option>
+          <option value="enterprise">Enterprise</option>
+        </select>
+
            </div>
          </div>
          <div className="space-y-2">
            <Label htmlFor="notes">Notes</Label>
-           <Textarea id="notes" placeholder="Enter any additional notes here" />
+           <textarea id="notes" name="notes" value={formData.notes} onChange={handleChange} />
          </div>
        </CardContent>
        <CardFooter>
-         <Button className="ml-auto">Submit</Button>
+         <Button onClick={handleSubmit} className="ml-auto">Submit</Button>
        </CardFooter>
      </Card>
    )
@@ -825,12 +833,7 @@ function TrashIcon(props) {
 
 
 
-function Settings(){
-  return(
 
-    <p>Setings tab</p>
-  )
-}
 
 import {runai} from "@/lib/gen"
 
@@ -1119,7 +1122,7 @@ function PaymentChart() {
 }
 
 const RadialBarChart2 = ({ data }) => {
-  // Process data to aggregate cost by paymentType
+
   const paymentTypeTotals = data.subscriptions.reduce((acc, sub) => {
     const paymentType = sub.paymentType;
     const cost = parseInt(sub.cost, 10);
@@ -1131,7 +1134,6 @@ const RadialBarChart2 = ({ data }) => {
     return acc;
   }, {});
 
-  // Transform aggregated data into the format expected by Nivo RadialBar
   const chartData = Object.entries(paymentTypeTotals).map(([key, value]) => ({
     id: key,
     data: [{ x: key, y: value }],
@@ -1399,3 +1401,58 @@ const dataTotals = [...prevMonthsTotals, currentMonthTotal, nextMonthPrediction]
         </div>
     );
 };
+
+import { Switch } from "@/components/ui/switch"
+import { useTheme } from "next-themes";
+import Blockchainbutton from "@/components/trans"
+
+function Settings(){
+  const { theme, setTheme } = useTheme();
+  return(
+    <div>
+     <div className="grid gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>User Information</CardTitle>
+                <CardDescription>Your current email ID.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-700 dark:text-gray-300">user@example.com</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Theme Settings</CardTitle>
+                <CardDescription>Toggle between light and dark mode.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between space-x-2">
+                  <Label htmlFor="theme">Dark Mode</Label>
+                  <Switch onClick={() => setTheme(theme === "dark" ? "light" : "dark")} id="theme" />
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Blockchain Integration</CardTitle>
+                <CardDescription>Upload your data to the blockchain.</CardDescription>
+              </CardHeader>
+              <CardContent>
+              <Blockchainbutton/>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Data Management</CardTitle>
+                <CardDescription>Delete all your user data.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="text-red-500 border-red-500 hover:bg-red-500 hover:text-white" variant="outline">
+                  Delete All Data
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+    </div>
+  )
+}

@@ -26,20 +26,42 @@ export async function GET(req, res) {
 
 export async function POST(req) {
 
-  var inno = await req.json()
-  await prisma.innovations.create({
-    data:{
-        title:inno.title,
-        hash:inno.hash,
-        author: inno.author,
-        pass: inno.pass,
-        date: inno.date,
-        chain: inno.chain
+  const { email, subscription } = req.body;
 
+  try {
+   
+    let user = await prisma.users.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+    if (user) {
+     
+      user = await prisma.users.update({
+        where: {
+          email: email,
+        },
+        data: {
+          subscriptions: subscription,
+        },
+      });
+    } else {
+
+      user = await prisma.users.create({
+        data: {
+          email: email,
+          subscriptions: subscription,
+        },
+      });
     }
-  })
-  
 
-  return new Response("OK")
+    return new Response("OK")
+  } catch (error) {
+    console.error('Error handling the request:', error.message);
+   
+  }
+
+ 
   
 }
