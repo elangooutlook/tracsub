@@ -17,11 +17,10 @@ import { Label } from "@/components/ui/label"
 import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { BsRobot } from "react-icons/bs";
-
+import { useSearchParams } from 'next/navigation'
 
 
 var data = {
-  "email": "elango5292@gmail.com",
   "subscriptions": [
     {
       "id": "1",
@@ -118,7 +117,14 @@ const prevMonthsTotals = [12, 32, 43, 45];
 export default function Component() {
   const [nav,setnav]=useState(1)
   const [selectedPeriod, setSelectedPeriod] = useState('month');
-// month , day , weekly , yearly 
+  const [email, setEmail] = useState("123@das.fk");
+  const searchParams = useSearchParams();
+  const emailFromURL = searchParams.get('email'); 
+
+  useEffect(() => {
+    if(emailFromURL) setEmail(emailFromURL);
+  }, [emailFromURL]); 
+
   useEffect((
 
 
@@ -190,7 +196,7 @@ export default function Component() {
         </DropdownMenu>
       </header>
 
-        {nav === 1 ? <Subscriptions/> : nav === 2 ? <Analyze/> : <Settings/>}
+        {nav === 1 ? <Subscriptions email={email}/> : nav === 2 ? <Analyze/> : <Settings email={email}/>}
 
         </ResizablePanel>
       </ResizablePanelGroup>
@@ -269,7 +275,7 @@ function PlusIcon(props) {
 }
 
 
-function Subscriptionform({handl}){
+function Subscriptionform({handl,email}){
   const [subscriptionName, setSubscriptionName] = useState('');
   const initialSubscriptions = ['Netflix',
   'Spotify',
@@ -292,10 +298,9 @@ function Subscriptionform({handl}){
   'Adobe Creative Cloud',
   'Microsoft Office 365'];
   const [suggestedSubscriptions, setSuggestedSubscriptions] = useState([]);
-var sname = ""
 
   const [formData, setFormData] = useState({
-    "name": sname,
+    "name":"" ,
     "cost": '',
     "currency": '',
     "date": '',
@@ -317,9 +322,55 @@ var sname = ""
     }));
   };
   
+  function addSubscription(existingData, newSubscription) {
+    if (!Array.isArray(existingData.subscriptions)) {
+      existingData.subscriptions = [];
+    }
+  
+    const newId = existingData.subscriptions.reduce((acc, curr) => Math.max(acc, parseInt(curr.id, 10)), 0) + 1;
+  
+    newSubscription.id = newId.toString();
+  
+    
+    existingData.subscriptions.push(newSubscription);
+  
+    return existingData;
+  }
+  
+
+  async function sendSubscription(email, subscription) {
+    const url = '/api/users'; // Replace with your actual endpoint URL
+    const bodyContent = {
+      email: email,
+      subscription: subscription,
+    };
+  
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bodyContent),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json(); // Assuming the server responds with JSON
+      console.log('Success:', data);
+      // Handle success
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle errors here, such as showing an error message to the user
+    }
+  }
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would typically send formData to your backend or state management store
+    sendSubscription(email,addSubscription(data,formData))
     console.log(formData);
   };
 
@@ -343,9 +394,11 @@ var sname = ""
     setSuggestedSubscriptions([]);
   };
 
-  var sname = ""
+ 
 
-  function subnamechangehanf(){
+  function subnamechangehanf(e){
+    handleSubscriptionNameChange(e)
+    handleChange(e)
 
   }
 
@@ -371,7 +424,7 @@ var sname = ""
        <div className="space-y-2">
     <Label htmlFor="subscription-name">Subscription Name</Label>
     <Input id="subscription-name" placeholder="Enter subscription name" value={subscriptionName}
-      onChange={ handleSubscriptionNameChange} />
+      onChange={subnamechangehanf} />
     {suggestedSubscriptions.length > 0 && (
       <ul>
         {suggestedSubscriptions.map((subscription, index) => (
@@ -385,11 +438,11 @@ var sname = ""
          <div className="grid grid-cols-2 gap-4">
            <div className="space-y-2">
              <Label htmlFor="cost">Cost</Label>
-             <Input id="cost" placeholder="Enter cost" type="number" name="cost" value={formData.cost} onChange={handleChange} />
+             <Input id="cost" placeholder="Enter cost" type="number" name="cost" value={formData.cost} onChange={handleChange}  />
            </div>
            <div className="space-y-2">
              <Label htmlFor="currency">Currency</Label>
-             <select id="currency" name="currency" value={formData.currency} onChange={handleChange}>
+             <select id="currency" name="currency" value={formData.currency} onChange={handleChange} className="block w-full px-4 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
           <option value="usd">USD</option>
           <option value="eur">EUR</option>
           <option value="gbp">GBP</option>
@@ -399,12 +452,12 @@ var sname = ""
          </div>
          <div className="space-y-2">
            <Label htmlFor="subscription-date">Subscription Date</Label>
-           <Input id="subscription-date" name="date" type="date" value={formData.date} onChange={handleChange} />
+           <Input id="subscription-date" name="date" type="date" value={formData.date} onChange={handleChange} className="block w-full px-4 py-2 mt-1 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"/>
          </div>
          <div className="grid grid-cols-2 gap-4">
            <div className="space-y-2">
              <Label htmlFor="period">Period</Label>
-             <select id="period" name="period" value={formData.period} onChange={handleChange}>
+             <select id="period" name="period" value={formData.period} onChange={handleChange} className="block w-full px-4 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
           <option value="daily">Daily</option>
           <option value="weekly">Weekly</option>
           <option value="monthly">Monthly</option>
@@ -413,7 +466,7 @@ var sname = ""
            </div>
            <div className="space-y-2">
              <Label htmlFor="payment-type">Payment Type</Label>
-             <select id="paymentType" name="paymentType" value={formData.paymentType} onChange={handleChange}>
+             <select id="paymentType" name="paymentType" value={formData.paymentType} onChange={handleChange} className="block w-full px-4 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
           <option value="cash">Cash</option>
           <option value="credit-card">Credit Card</option>
           <option value="debit-card">Debit Card</option>
@@ -425,7 +478,7 @@ var sname = ""
            <Label htmlFor="category">Category</Label>
            
 
-           <select id="category" name="category" value={formData.category} onChange={handleChange}>
+           <select id="category" name="category" value={formData.category} onChange={handleChange} className="block w-full px-4 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
            <option value="streaming">Streaming</option>
     <option value="music">Music</option>
     <option value="productivity-tools">Productivity Tools</option>
@@ -442,12 +495,12 @@ var sname = ""
          </div>
          <div className="space-y-2">
            <Label htmlFor="reminder">Reminder</Label>
-           <input id="reminder" name="reminder" type="number" value={formData.reminder} onChange={handleChange} />
+           <input id="reminder" name="reminder" type="number" value={formData.reminder} onChange={handleChange} className="block w-full px-4 py-2 mt-1 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"/>
          </div>
          <div className="grid grid-cols-2 gap-4">
            <div className="space-y-2">
              <Label htmlFor="type">Type</Label>
-             <select id="type" name="type" value={formData.type} onChange={handleChange}>
+             <select id="type" name="type" value={formData.type} onChange={handleChange} className="block w-full px-4 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
           <option value="recurring">Recurring</option>
           <option value="one-time">One Time</option>
           <option value="trail">Trial</option>
@@ -455,19 +508,9 @@ var sname = ""
            </div>
            <div className="space-y-2">
              <Label htmlFor="plan-name">Plan Name</Label>
-             <Select>
-               <SelectTrigger id="plan-name">
-                 <SelectValue placeholder="Select" />
-               </SelectTrigger>
-               <SelectContent>
-                 <SelectItem value="basic">Basic</SelectItem>
-                 <SelectItem value="standard">Standard</SelectItem>
-                 <SelectItem value="premium">Premium</SelectItem>
-                 <SelectItem value="enterprise">Enterprise</SelectItem>
-               </SelectContent>
-             </Select>
+            
 
-             <select id="planName" name="planName" value={formData.planName} onChange={handleChange}>
+             <select id="plan-name" name="plan-name" value={formData["plan-name"]} onChange={handleChange} className="block w-full px-4 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
           <option value="basic">Basic</option>
           <option value="standard">Standard</option>
           <option value="premium">Premium</option>
@@ -478,7 +521,8 @@ var sname = ""
          </div>
          <div className="space-y-2">
            <Label htmlFor="notes">Notes</Label>
-           <textarea id="notes" name="notes" value={formData.notes} onChange={handleChange} />
+           <textarea id="notes" name="notes" value={formData.notes} onChange={handleChange} className="block w-full px-4 py-2 mt-1 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+      rows="4"/>
          </div>
        </CardContent>
        <CardFooter>
@@ -488,7 +532,7 @@ var sname = ""
    )
 }
 
-function Subscriptions() {
+function Subscriptions({email}) {
   const periods = ['Daily', 'Weekly', 'Monthly', 'Annually'];
   const paymentTypes = ['Cash', 'Credit Card', 'Debit Card', 'Bank Account'];
   const activeStatuses = ['Active', 'Inactive'];
@@ -551,7 +595,7 @@ const [showform,setshowform] = useState(false)
       </header>
 
 
-{showform? <Subscriptionform handl = {setshowform}/> :
+{showform? <Subscriptionform handl = {setshowform} email={email}/> :
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
         
         <div className="flex flex-col md:grid md:grid-cols-6 gap-6">
@@ -1406,7 +1450,7 @@ import { Switch } from "@/components/ui/switch"
 import { useTheme } from "next-themes";
 import Blockchainbutton from "@/components/trans"
 
-function Settings(){
+function Settings({email}){
   const { theme, setTheme } = useTheme();
   return(
     <div>
@@ -1417,7 +1461,7 @@ function Settings(){
                 <CardDescription>Your current email ID.</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-700 dark:text-gray-300">user@example.com</p>
+                <p className="text-gray-700 dark:text-gray-300">{email}</p>
               </CardContent>
             </Card>
             <Card>
